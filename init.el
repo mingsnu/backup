@@ -1,3 +1,5 @@
+;;(setq mac-option-modifier 'super)
+;;(setq mac-command-modifier 'meta)
 (require 'package)
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.org/packages/") t)
@@ -6,8 +8,10 @@
   (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
 (package-initialize) ;; You might already have this line
 
+(add-to-list 'load-path "~/.emacs.d/lisp/")
+
 ;; auto-complete
-(add-to-list 'load-path "~/.emacs.d")    ; This may not be appeared if you have already added.
+;;(add-to-list 'load-path "~/.emacs.d")    ; This may not be appeared if you have already added.
 (require 'auto-complete-config)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 (ac-config-default)
@@ -25,8 +29,9 @@
 (yas-global-mode 1)
 
 ; enable ess mode
-(setq load-path (cons "/usr/share/emacs/site-lisp/ess" load-path))
-(require 'ess-site)
+; (setq load-path (cons "/usr/share/emacs/site-lisp/ess" load-path))
+; (setq inferior-julia-program-name "/usr/local/bin/julia")
+ (require 'ess-site)
 
 ; activate AUCTeX and preview-latex
 (load "auctex.el" nil t t)
@@ -37,6 +42,23 @@
 (add-to-list 'auto-mode-alist '("\\.text\\'" . gfm-mode))
 (add-to-list 'auto-mode-alist '("\\.markdown\\'" . gfm-mode))
 (add-to-list 'auto-mode-alist '("\\.md\\'" . gfm-mode))
+(add-to-list 'auto-mode-alist '("\\.Rmd\\'" . gfm-mode))
+;; using pandoc as markdown generating tools
+;; customize R shebang
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(insert-shebang-custom-headers nil)
+ '(insert-shebang-env-path "/usr/bin/env")
+ '(insert-shebang-file-types
+   (quote
+    (("py" . "python")
+     ("sh" . "bash")
+     ("pl" . "perl")
+     ("R" . "R"))))
+ '(markdown-command "/usr/local/bin/pandoc"))
 
 ; enbable flycheck
 ;(add-hook 'after-init-hook #'global-flycheck-mode)
@@ -63,20 +85,19 @@
           ;; functions.
           (narrow-to-defun)
           (iedit-start (current-word) (point-min) (point-max)))))))
-(global-set-key (kbd "C-c ;") 'iedit-dwim)
+(global-set-key (kbd "C-;") 'iedit-dwim)
 
-; ecb: Emacs code Browser
-(require 'ecb)
-(require 'ecb-autoloads)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(ecb-options-version "2.40"))
+(defcustom python-shell-interpreter "python3"
+  "Default Python interpreter for shell."
+  :type 'string
+  :group 'python)
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+;;(require 'insert-shebang)
+(require 'header2-snps)
